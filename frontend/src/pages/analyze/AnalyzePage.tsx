@@ -7,6 +7,8 @@ import { Button } from "../../components/ui/button";
 import { useTranslation } from "react-i18next";
 import { useAuthStore } from "../../lib/useAuthStore";
 import { AuthModal } from "../../components/auth/AuthModal";
+import { useQuery } from "@tanstack/react-query";
+import { Lock, History, Infinity as InfinityIcon, Map, MessageSquare, CloudLightning, Activity, Bell } from "lucide-react";
 
 const getProcessingSteps = (t: any) => [
   t('analyze.steps.scanning'),
@@ -28,6 +30,20 @@ export function AnalyzePage() {
   const { isGuest } = useAuthStore();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const PROCESSING_STEPS = getProcessingSteps(t);
+
+  // Fetch scan history for limits
+  const { data: historyList } = useQuery({
+    queryKey: ['scanHistoryList'],
+    queryFn: async () => {
+      const res = await api.get('/analyze/history/list');
+      return res.data;
+    },
+    enabled: isGuest
+  });
+
+  const scansUsed = historyList?.length || 0;
+  const remainingScans = Math.max(0, 2 - scansUsed);
+  const isLimitReached = isGuest && scansUsed >= 2;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -120,18 +136,69 @@ export function AnalyzePage() {
         <p className="text-gray-500 mt-2">{t('analyze.subtitle')}</p>
       </div>
 
-      {isGuest && (
-        <div className="bg-amber-50 border border-amber-200 text-amber-800 px-4 py-3 rounded-xl mb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <div>
-            <span className="font-bold">Guest Mode</span> - You have limited free analyses remaining. 
+      {isGuest && !isLimitReached && (
+        <motion.div 
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-gradient-to-r from-emerald-50 to-emerald-100/50 border border-emerald-200/60 text-emerald-900 px-6 py-4 rounded-2xl mb-8 flex flex-col sm:flex-row justify-between items-center gap-4 shadow-sm"
+        >
+          <div className="flex items-center gap-3">
+            <div className="text-2xl">🎁</div>
+            <div>
+              <div className="font-bold text-emerald-950">Experience AI Crop Doctor</div>
+              <div className="text-sm text-emerald-700/80 font-medium">No signup required.</div>
+            </div>
           </div>
-          <Button variant="outline" size="sm" className="bg-white border-amber-300 text-amber-900 hover:bg-amber-100" onClick={() => setShowAuthModal(true)}>
-            Save Account
-          </Button>
-        </div>
+          <div className="flex items-center gap-4">
+            <div className="bg-white/60 px-4 py-1.5 rounded-full text-sm font-bold shadow-sm border border-emerald-100">
+              {remainingScans} / 2 Remaining
+            </div>
+            <Button variant="outline" size="sm" className="bg-white border-emerald-200 text-emerald-700 hover:bg-emerald-50 rounded-xl" onClick={() => setShowAuthModal(true)}>
+              Save Account
+            </Button>
+          </div>
+        </motion.div>
       )}
 
-      <div className="flex-1 flex flex-col items-center justify-center">
+      {isLimitReached ? (
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="w-full max-w-2xl mx-auto"
+        >
+          <div className="relative overflow-hidden rounded-3xl bg-white border border-gray-100 shadow-2xl shadow-gray-200/50">
+            {/* Blurred Features Background overlay effect inside card */}
+            <div className="absolute inset-0 bg-gradient-to-br from-gray-50/90 to-white/90 backdrop-blur-xl z-0" />
+            
+            <div className="relative z-10 p-8 sm:p-12 text-center">
+              <div className="mx-auto w-16 h-16 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-emerald-500/30 text-white">
+                <Lock className="w-8 h-8" />
+              </div>
+              <h2 className="text-3xl font-extrabold text-gray-900 mb-3 tracking-tight">You've completed your free trial.</h2>
+              <p className="text-gray-500 text-lg mb-8 max-w-md mx-auto">Create your FREE account to unlock unlimited AI crop analysis and much more.</p>
+              
+              <div className="grid grid-cols-2 gap-4 text-left max-w-md mx-auto mb-10 opacity-70 blur-[1px] hover:blur-none transition-all duration-500">
+                <div className="flex items-center gap-2 text-sm font-medium text-gray-700 bg-gray-50 p-3 rounded-xl border border-gray-100"><History className="w-4 h-4 text-emerald-500" /> Crop History</div>
+                <div className="flex items-center gap-2 text-sm font-medium text-gray-700 bg-gray-50 p-3 rounded-xl border border-gray-100"><InfinityIcon className="w-4 h-4 text-emerald-500" /> Unlimited AI Analysis</div>
+                <div className="flex items-center gap-2 text-sm font-medium text-gray-700 bg-gray-50 p-3 rounded-xl border border-gray-100"><Map className="w-4 h-4 text-emerald-500" /> Multiple Farms</div>
+                <div className="flex items-center gap-2 text-sm font-medium text-gray-700 bg-gray-50 p-3 rounded-xl border border-gray-100"><MessageSquare className="w-4 h-4 text-emerald-500" /> AI Chat</div>
+                <div className="flex items-center gap-2 text-sm font-medium text-gray-700 bg-gray-50 p-3 rounded-xl border border-gray-100"><CloudLightning className="w-4 h-4 text-emerald-500" /> Weather Alerts</div>
+                <div className="flex items-center gap-2 text-sm font-medium text-gray-700 bg-gray-50 p-3 rounded-xl border border-gray-100"><Activity className="w-4 h-4 text-emerald-500" /> Disease Prediction</div>
+                <div className="flex items-center gap-2 text-sm font-medium text-gray-700 bg-gray-50 p-3 rounded-xl border border-gray-100 col-span-2 justify-center"><Bell className="w-4 h-4 text-emerald-500" /> Notifications & Alerts</div>
+              </div>
+
+              <Button 
+                onClick={() => setShowAuthModal(true)}
+                size="lg" 
+                className="w-full max-w-xs mx-auto h-14 text-lg font-bold rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-[0_0_40px_rgba(5,150,105,0.4)] hover:shadow-[0_0_60px_rgba(5,150,105,0.6)] transition-all animate-pulse-glow"
+              >
+                Create Free Account
+              </Button>
+            </div>
+          </div>
+        </motion.div>
+      ) : (
+        <div className="flex-1 flex flex-col items-center justify-center">
         <AnimatePresence mode="wait">
           {!previewUrl ? (
             <motion.div
@@ -295,6 +362,7 @@ export function AnalyzePage() {
           onChange={handleFileChange}
         />
       </div>
+      )}
       
       <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
     </div>

@@ -24,6 +24,8 @@ async def sync_user(
     """
     Called by the frontend immediately after Firebase login.
     Ensures the user exists in the PostgreSQL database.
+    If the user was a guest who just linked a real account,
+    their DB record is updated with the new real email/name.
     Returns the user's role from the database.
     """
     
@@ -52,6 +54,22 @@ async def sync_user(
         db.add(user)
         await db.commit()
         await db.refresh(user)
+    else:
+        # User exists — if they upgraded from guest to real account, update their info
+        needs_update = False
+        if not current_user.is_anonymous and current_user.email:
+            # If stored email is a guest placeholder, replace it with real email
+            if user.email and user.email.endswith("@guest.local"):
+                user.email = current_user.email
+                user.name = current_user.email.split('@')[0]
+                needs_update = True
+            elif not user.email:
+                user.email = current_user.email
+                needs_update = True
+        
+        if needs_update:
+            await db.commit()
+            await db.refresh(user)
     
     return {
         "uid": str(user.id),

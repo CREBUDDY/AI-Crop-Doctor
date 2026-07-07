@@ -84,4 +84,19 @@
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
   }
+  .animate-pulse-glow {
+    animation: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  @keyframes pulse-glow {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+      box-shadow: 0 0 20px rgba(5,150,105,0.4);
+    }
+    50% {
+      opacity: .9;
+      transform: scale(1.02);
+      box-shadow: 0 0 40px rgba(5,150,105,0.6);
+    }
+  }
 }
