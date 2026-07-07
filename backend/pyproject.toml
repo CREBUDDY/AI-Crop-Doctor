@@ -1,0 +1,13 @@
+[project]
+name = "ai-crop-doctor-backend"
+version = "1.0.0"
+description = "AI Crop Doctor - FastAPI Backend"
+requires-python = ">=3.12"
+
+[tool.ruff]
+line-length = 100
+select = ["E", "F", "I", "N", "W"]
+
+[tool.black]
+line-length = 100
+target-version = ["py312"]

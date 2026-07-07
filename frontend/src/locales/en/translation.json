@@ -1,0 +1,176 @@
+{
+  "nav": {
+    "features": "Features",
+    "howItWorks": "How It Works",
+    "stats": "Stats",
+    "signIn": "Sign In",
+    "tryOnline": "Try online free",
+    "goToDashboard": "Go to Dashboard"
+  },
+  "hero": {
+    "badge": "Advanced AI Crop Analysis",
+    "title1": "Your Personal AI",
+    "title2": "Crop Doctor",
+    "subtitle": "Instantly identify plant diseases, get personalized treatment plans, and maximize your yield using cutting-edge artificial intelligence.",
+    "cta": "Diagnose Crop Now",
+    "secondary": "Watch Demo"
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "analyze": "Analyze",
+    "history": "History",
+    "weather": "Weather",
+    "signOut": "Sign out"
+  },
+  "dashboard": {
+    "title": "Farm Dashboard",
+    "subtitle": "Here is the current status of your primary crop.",
+    "healthScore": "Health Score"
+  },
+  "analyze": {
+    "title": "AI Disease Scanner",
+    "subtitle": "Upload a clear photo of the affected plant leaf for instant analysis.",
+    "dragDrop": "Drag & Drop Image Here",
+    "supports": "Supports JPG, PNG up to 10MB. Ensure the leaf is clearly visible.",
+    "browse": "Browse Files",
+    "camera": "Use Camera",
+    "trust1": "ICAR Verified Data",
+    "trust2": "Instant Results",
+    "trust3": "95%+ Accuracy",
+    "qualityTitle": "Image Quality Check",
+    "qualityDesc": "Perfect lighting and focus.",
+    "excellent": "Excellent",
+    "analyzeBtn": "Analyze Crop Health",
+    "alertValidation": "AI Image Validation Failed:",
+    "alertFail": "Failed to analyze image. Please try again.",
+    "steps": {
+      "scanning": "Scanning leaf structure...",
+      "identifying": "Identifying crop species...",
+      "analyzing": "Analyzing for fungal and bacterial patterns...",
+      "crossReferencing": "Cross-referencing ICAR disease database...",
+      "generating": "Generating treatment protocol..."
+    }
+  },
+  "weather": {
+    "title": "Weather Forecast",
+    "subtitle": "7-day hyper-local weather forecast.",
+    "temp": "Temperature",
+    "humidity": "Humidity",
+    "wind": "Wind",
+    "rain": "Rain Chance"
+  },
+  "history": {
+    "title": "Crop History",
+    "subtitle": "View past diagnoses and treatments.",
+    "date": "Date",
+    "crop": "Crop",
+    "disease": "Disease",
+    "status": "Status"
+  },
+  "landing": {
+    "howItWorks": {
+      "badge": "Simple Process",
+      "title": "Three taps to happy plants",
+      "subtitle": "Getting expert plant care has never been this easy (or this fun).",
+      "step1": {
+        "title": "Snap a photo",
+        "desc": "Point your camera at any plant — whether it looks healthy, sad, or somewhere in between. Our AI loves a good plant selfie!"
+      },
+      "step2": {
+        "title": "Get AI diagnosis",
+        "desc": "In seconds, our AI analyzes your photo and identifies diseases, deficiencies, or pests. It's like having a plant doctor on speed dial."
+      },
+      "step3": {
+        "title": "Follow your care plan",
+        "desc": "Receive a personalized treatment plan with step-by-step instructions. Set reminders so you never forget to water again!"
+      }
+    },
+    "features": {
+      "title": "Everything you need for healthy crops",
+      "f1": {
+        "title": "AI Disease Detection",
+        "desc": "Instantly scan leaves to identify diseases with high accuracy using deep learning."
+      },
+      "f2": {
+        "title": "Pest Detection",
+        "desc": "Identify harmful insects and pests automatically before they destroy your yield."
+      },
+      "f3": {
+        "title": "Verified Medicine",
+        "desc": "Receive ICAR-verified chemical and organic treatment recommendations."
+      },
+      "f4": {
+        "title": "Smart Irrigation",
+        "desc": "Optimize water usage with AI-driven watering schedules based on soil and weather."
+      },
+      "f5": {
+        "title": "Weather Intelligence",
+        "desc": "Proactive hyper-local weather alerts for fungal risks and optimal spraying times."
+      },
+      "f6": {
+        "title": "Crop History",
+        "desc": "Beautiful charts documenting the journey from disease detection to recovery."
+      }
+    },
+    "stats": {
+      "acc": "Detection Accuracy",
+      "crops": "Supported Crops",
+      "disease": "Disease Types",
+      "monitoring": "AI Monitoring"
+    },
+    "footer": {
+      "copy": "© 2026 AI Crop Doctor. Crafted with Care."
+    }
+  },
+  "report": {
+    "loading": "Loading report...",
+    "error": {
+      "title": "Failed to load report",
+      "desc": "The report ID may be invalid or you do not have permission to view it.",
+      "back": "Return to Dashboard"
+    },
+    "title": "Analysis Report",
+    "subtitle": "Crop Analysis",
+    "verified": "AI Verified",
+    "score": "Score",
+    "status": {
+      "healthy": "Healthy Crop",
+      "severity": "Severity",
+      "healthyTitle": "Crop Appears Healthy",
+      "healthyDesc": "No significant diseases or pests were detected with high confidence.",
+      "detected": "Detected",
+      "diseaseDesc": "We detected signs of infection. Immediate action is required to prevent further crop loss and spreading to healthy plants."
+    },
+    "confidence": {
+      "title": "AI Confidence Analysis",
+      "disease": "Detected disease.",
+      "pest": "Detected pest.",
+      "none": "No issues detected by the AI."
+    },
+    "recovery": {
+      "title": "Recovery Estimate",
+      "label": "Expected Recovery In",
+      "days": "7 - 10 Days",
+      "desc": "If the recommended treatment is applied today, new healthy foliage should appear within a week."
+    },
+    "plan": {
+      "title": "Verified Treatment Plan",
+      "subtitle": "ICAR Approved Protocol",
+      "medicine": {
+        "type": "Chemical Fungicide",
+        "dosage": "Dosage / Acre",
+        "water": "Water / Acre",
+        "important": "Important:",
+        "warning": "Wait at least 5 days after spraying before harvesting. Wear protective gear."
+      },
+      "why": {
+        "title": "Why we recommend this",
+        "desc": "Mancozeb is a broad-spectrum contact fungicide that provides excellent preventative action. It is highly recommended by ICAR for this specific stage of crop growth."
+      },
+      "actions": {
+        "add": "Add to Today's Tasks",
+        "order": "Order Medicine"
+      }
+    }
+  }
+}
