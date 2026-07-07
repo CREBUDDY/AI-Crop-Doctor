@@ -12,7 +12,7 @@ import { MapPin } from "lucide-react";
 
 export function DashboardLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { user } = useAuthStore();
+  const { user, isGuest } = useAuthStore();
   const { farmsList, activeFarm, setFarms } = useFarmStore();
 
   const { isLoading: isLoadingFarms } = useQuery({
@@ -43,7 +43,14 @@ export function DashboardLayout() {
               <Menu className="w-5 h-5" />
             </button>
             <h1 className="text-lg font-bold text-slate-800 hidden sm:block">
-              Welcome back, {user?.displayName?.split(' ')[0] || 'Farmer'} 👋
+              {isGuest ? (
+                <span className="flex items-center gap-2">
+                  Welcome, Guest 👋
+                  <span className="text-xs font-semibold bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full uppercase tracking-wide">Trial Mode</span>
+                </span>
+              ) : (
+                <>Welcome back, {user?.displayName?.split(' ')[0] || 'Farmer'} 👋</>
+              )}
             </h1>
           </div>
 
@@ -64,7 +71,7 @@ export function DashboardLayout() {
             </button>
             
             <div className="w-9 h-9 rounded-full bg-mint-100 text-mint-700 flex items-center justify-center font-bold shadow-sm border border-mint-200 cursor-pointer hidden sm:flex">
-              {user?.displayName?.[0] || user?.email?.[0]?.toUpperCase() || 'U'}
+              {isGuest ? 'G' : (user?.displayName?.[0] || user?.email?.[0]?.toUpperCase() || 'U')}
             </div>
           </div>
         </header>

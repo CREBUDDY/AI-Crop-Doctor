@@ -1,4 +1,3 @@
-import os
 import uuid
 import httpx
 from datetime import datetime, timezone, timedelta
@@ -9,13 +8,14 @@ from app.infrastructure.database.models.analysis import WeatherRecord
 from app.infrastructure.database.models.enums import WeatherRiskLevel
 from app.infrastructure.repositories.farm import farm_repo
 from fastapi import HTTPException
+from app.core.config import settings
 
 # Base URL for OpenWeatherMap (standard 2.5 API)
 OWM_BASE_URL = "https://api.openweathermap.org/data/2.5"
 
 class WeatherService:
     def __init__(self):
-        self.api_key = os.getenv("OPENWEATHER_API_KEY")
+        self.api_key = settings.OPENWEATHER_API_KEY
         self.weather_repo = BaseRepository(WeatherRecord)
 
     async def get_weather_for_farm(self, db: AsyncSession, farm_id: uuid.UUID, user_id: uuid.UUID) -> WeatherRecord:

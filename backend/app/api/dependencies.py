@@ -10,11 +10,12 @@ from app.infrastructure.database.models.user import User
 
 # Basic Pydantic model representing the authenticated user state
 class AuthenticatedUser:
-    def __init__(self, uid: str, email: str, role: str, firebase_uid: str):
+    def __init__(self, uid: str, email: str, role: str, firebase_uid: str, is_anonymous: bool = False):
         self.uid = uid
         self.firebase_uid = firebase_uid
         self.email = email
         self.role = role
+        self.is_anonymous = is_anonymous
 
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
@@ -30,14 +31,18 @@ async def get_current_user(
     firebase_uid = decoded_token.get("uid")
     email = decoded_token.get("email", "")
     
+    # Check if the user is a Firebase anonymous user
+    sign_in_provider = decoded_token.get("firebase", {}).get("sign_in_provider")
+    is_anonymous = sign_in_provider == "anonymous"
+    
     result = await db.execute(select(User).where(User.firebase_uid == firebase_uid))
     user = result.scalars().first()
     
     if not user:
         # User not in DB yet (e.g. during /sync)
-        return AuthenticatedUser(uid=str(uuid.uuid4()), email=email, role="farmer", firebase_uid=firebase_uid)
+        return AuthenticatedUser(uid=str(uuid.uuid4()), email=email, role="farmer", firebase_uid=firebase_uid, is_anonymous=is_anonymous)
         
-    return AuthenticatedUser(uid=str(user.id), email=user.email, role=user.role.value, firebase_uid=firebase_uid)
+    return AuthenticatedUser(uid=str(user.id), email=user.email, role=user.role.value, firebase_uid=firebase_uid, is_anonymous=is_anonymous)
 
 class RequireRole:
     """

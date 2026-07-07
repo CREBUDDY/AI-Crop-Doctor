@@ -1,7 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
-import { Link } from "react-router-dom";
-import { Leaf, ScanLine, Bug, Pill, Droplets, CloudLightning, Activity, LineChart, Bell, Mic, Camera, Brain, ShieldCheck, CloudRain, Sprout, Play, X, ChevronRight } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Leaf, ScanLine, Bug, Pill, Droplets, CloudLightning, Activity, LineChart, Bell, Mic, Camera, Brain, ShieldCheck, CloudRain, Sprout, Play, X, ChevronRight, Loader2 } from "lucide-react";
+import { signInAnonymously } from "firebase/auth";
+import { auth } from "../lib/firebase";
 import { useAuthStore } from "../lib/useAuthStore";
 import { LanguageSelector } from "../components/ui/LanguageSelector";
 import { useTranslation } from "react-i18next";
@@ -36,8 +38,40 @@ function AnimatedCounter({ value, suffix = "" }: { value: number; suffix?: strin
 
 export function LandingPage() {
   const [isDemoOpen, setIsDemoOpen] = useState(false);
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
   const { user } = useAuthStore();
   const { t } = useTranslation();
+  const navigate = useNavigate();
+
+  const handleTryGuest = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (user) {
+      navigate('/dashboard');
+      return;
+    }
+    try {
+      setIsAuthenticating(true);
+      const credential = await signInAnonymously(auth);
+      const token = await credential.user.getIdToken();
+      
+      // Update store immediately to prevent race condition redirection to /login
+      useAuthStore.getState().setUser(credential.user);
+      useAuthStore.getState().setToken(token);
+      
+      navigate('/dashboard');
+    } catch (error: any) {
+      console.error("Guest login failed", error);
+      
+      // If it's an operation-not-allowed or admin-restricted-operation error, give a helpful message
+      if (error.code === 'auth/operation-not-allowed' || error.code === 'auth/admin-restricted-operation') {
+        alert("Anonymous authentication is not enabled in Firebase.\n\nPlease go to your Firebase Console -> Authentication -> Sign-in methods, and enable 'Anonymous'. Then click Save.");
+      } else {
+        alert(`Failed to start guest trial: ${error.message || 'Unknown error'}`);
+      }
+    } finally {
+      setIsAuthenticating(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans selection:bg-mint-200 selection:text-mint-900 w-full overflow-x-hidden">
@@ -69,9 +103,14 @@ export function LandingPage() {
                   {t('nav.signIn')}
                 </Link>
               )}
-              <Link to="/dashboard" className="inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-mint-500 hover:bg-mint-600 text-white font-bold text-sm whitespace-nowrap shadow-lg shadow-mint-500/30 hover:-translate-y-0.5 transition-all">
+              <button 
+                onClick={handleTryGuest}
+                disabled={isAuthenticating}
+                className="inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-mint-500 hover:bg-mint-600 text-white font-bold text-sm whitespace-nowrap shadow-lg shadow-mint-500/30 hover:-translate-y-0.5 transition-all disabled:opacity-70 disabled:hover:translate-y-0"
+              >
+                {isAuthenticating ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
                 {user ? t('nav.goToDashboard') : t('nav.tryOnline')}
-              </Link>
+              </button>
             </div>
           </div>
         </div>
@@ -114,12 +153,17 @@ export function LandingPage() {
                 {t('hero.subtitle')}
               </p>
               
-              {/* Web CTA Buttons (App store buttons removed per request) */}
+              {/* Web CTA Buttons */}
               <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4 justify-center lg:justify-start pt-2">
-                <Link to="/dashboard" className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-lg shadow-xl hover:-translate-y-1 transition-all">
+                <button 
+                  onClick={handleTryGuest}
+                  disabled={isAuthenticating}
+                  className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-lg shadow-xl hover:-translate-y-1 transition-all disabled:opacity-70 disabled:hover:translate-y-0"
+                >
+                  {isAuthenticating ? <Loader2 className="w-5 h-5 mr-2 animate-spin" /> : null}
                   {user ? t('nav.goToDashboard') : t('hero.cta')}
-                  <ChevronRight className="ml-2 h-5 w-5" />
-                </Link>
+                  {!isAuthenticating && <ChevronRight className="ml-2 h-5 w-5" />}
+                </button>
                 <button onClick={() => setIsDemoOpen(true)} className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-white hover:bg-slate-50 text-slate-800 font-bold text-lg border border-slate-200 shadow-sm hover:border-slate-300 transition-all">
                   <Play className="mr-2 h-5 w-5 text-mint-500 fill-mint-500" />
                   {t('hero.secondary')}

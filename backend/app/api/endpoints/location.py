@@ -1,7 +1,7 @@
-import os
 import httpx
 from fastapi import APIRouter, HTTPException, Depends
 from app.api.dependencies import get_current_user, AuthenticatedUser
+from app.core.config import settings
 
 router = APIRouter()
 OWM_GEO_URL = "http://api.openweathermap.org/geo/1.0"
@@ -12,7 +12,7 @@ async def reverse_geocode(
     lng: float,
     current_user: AuthenticatedUser = Depends(get_current_user)
 ):
-    api_key = os.getenv("OPENWEATHER_API_KEY")
+    api_key = settings.OPENWEATHER_API_KEY
     if not api_key:
         return {"name": "Default Village", "state": "Default State", "district": "Default District", "country": "IN"}
     
@@ -39,7 +39,7 @@ async def search_location(
     query: str,
     current_user: AuthenticatedUser = Depends(get_current_user)
 ):
-    api_key = os.getenv("OPENWEATHER_API_KEY")
+    api_key = settings.OPENWEATHER_API_KEY
     if not api_key:
         return []
         

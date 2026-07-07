@@ -13,6 +13,7 @@ class SyncResponse(BaseModel):
     uid: str
     email: str
     role: str
+    is_guest: bool
     message: str
 
 @router.post("/sync", response_model=SyncResponse)
@@ -31,10 +32,21 @@ async def sync_user(
     
     if not user:
         new_role = UserRole.ADMIN if (current_user.email and "admin" in current_user.email.lower()) else UserRole.FARMER
+        
+        # Handle Anonymous Users
+        email_to_save = current_user.email
+        name_to_save = "Unknown User"
+        
+        if current_user.is_anonymous:
+            email_to_save = email_to_save or f"guest_{current_user.firebase_uid}@guest.local"
+            name_to_save = "Guest User"
+        elif email_to_save:
+            name_to_save = email_to_save.split('@')[0]
+            
         user = User(
             firebase_uid=current_user.firebase_uid,
-            email=current_user.email,
-            name=current_user.email.split('@')[0] if current_user.email else "Unknown User",
+            email=email_to_save,
+            name=name_to_save,
             role=new_role
         )
         db.add(user)
@@ -45,6 +57,7 @@ async def sync_user(
         "uid": str(user.id),
         "email": user.email,
         "role": user.role.value,
+        "is_guest": current_user.is_anonymous,
         "message": "User synced successfully"
     }
 
@@ -56,5 +69,6 @@ async def get_my_profile(current_user: AuthenticatedUser = Depends(get_current_u
     return {
         "uid": current_user.uid,
         "email": current_user.email,
-        "role": current_user.role
+        "role": current_user.role,
+        "is_guest": current_user.is_anonymous
     }

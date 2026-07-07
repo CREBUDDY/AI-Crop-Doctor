@@ -6,6 +6,7 @@ from app.api.dependencies import get_current_user, AuthenticatedUser
 from app.infrastructure.database.session import get_db
 from app.infrastructure.database.models.analysis import Analysis, AIPrediction
 from sqlalchemy.future import select
+from sqlalchemy import func
 from fastapi import HTTPException
 from app.domain.entities.analysis import AnalysisResponse, AnalysisCreate
 from app.services.upload import upload_service
@@ -22,6 +23,12 @@ async def upload_image(
     """
     Upload an image for crop analysis. Returns the ImageMetadata including the image_id.
     """
+    if current_user.is_anonymous:
+        # Check guest limits
+        count = await db.scalar(select(func.count(Analysis.id)).where(Analysis.user_id == uuid.UUID(current_user.uid)))
+        if count >= 2:
+            raise HTTPException(status_code=403, detail="GUEST_LIMIT_REACHED")
+            
     image_record = await upload_service.upload_image(db, file, uuid.UUID(current_user.uid))
     return {"image_id": image_record.id, "url": image_record.download_url}
 
@@ -36,6 +43,12 @@ async def predict_crop(
     Requires an image_id from the /upload endpoint.
     Runs Gemini Vision AI and stores the result.
     """
+    if current_user.is_anonymous:
+        # Check guest limits
+        count = await db.scalar(select(func.count(Analysis.id)).where(Analysis.user_id == uuid.UUID(current_user.uid)))
+        if count >= 2:
+            raise HTTPException(status_code=403, detail="GUEST_LIMIT_REACHED")
+            
     return await analysis_service.process_analysis(
         db, 
         user_id=uuid.UUID(current_user.uid), 

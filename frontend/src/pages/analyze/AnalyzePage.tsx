@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Camera, Image as ImageIcon, UploadCloud, X, CheckCircle2, ShieldCheck, Zap } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { useTranslation } from "react-i18next";
+import { useAuthStore } from "../../lib/useAuthStore";
+import { AuthModal } from "../../components/auth/AuthModal";
 
 const getProcessingSteps = (t: any) => [
   t('analyze.steps.scanning'),
@@ -23,6 +25,8 @@ export function AnalyzePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const { i18n, t } = useTranslation();
+  const { isGuest } = useAuthStore();
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const PROCESSING_STEPS = getProcessingSteps(t);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,7 +91,10 @@ export function AnalyzePage() {
       setIsAnalyzing(false);
       
       // Check for strict AI Validation Rejection
-      if (error.response?.status === 400 && error.response?.data?.detail?.error_code === "INVALID_IMAGE") {
+      if (error.response?.status === 403 && error.response?.data?.detail === "GUEST_LIMIT_REACHED") {
+        setShowAuthModal(true);
+        clearSelection();
+      } else if (error.response?.status === 400 && error.response?.data?.detail?.error_code === "INVALID_IMAGE") {
         alert("⚠️ " + t('analyze.alertValidation') + "\n" + error.response.data.detail.message);
         clearSelection(); // Reset the UI so they upload a real photo
       } else {
@@ -112,6 +119,17 @@ export function AnalyzePage() {
         <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">{t('analyze.title')}</h1>
         <p className="text-gray-500 mt-2">{t('analyze.subtitle')}</p>
       </div>
+
+      {isGuest && (
+        <div className="bg-amber-50 border border-amber-200 text-amber-800 px-4 py-3 rounded-xl mb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+          <div>
+            <span className="font-bold">Guest Mode</span> - You have limited free analyses remaining. 
+          </div>
+          <Button variant="outline" size="sm" className="bg-white border-amber-300 text-amber-900 hover:bg-amber-100" onClick={() => setShowAuthModal(true)}>
+            Save Account
+          </Button>
+        </div>
+      )}
 
       <div className="flex-1 flex flex-col items-center justify-center">
         <AnimatePresence mode="wait">
@@ -277,6 +295,8 @@ export function AnalyzePage() {
           onChange={handleFileChange}
         />
       </div>
+      
+      <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
     </div>
   );
 }
