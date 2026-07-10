@@ -1,9 +1,29 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Search, Plus, Navigation } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { MapPin, Search, Plus, Navigation, Loader2 } from 'lucide-react';
 import { api } from '../../lib/api';
 import { useFarmStore } from '../../lib/useFarmStore';
 import { Button } from '../ui/button';
+
+// Free geocoding via Nominatim — no API key required
+async function nominatimSearch(query: string) {
+  const url =
+    `https://nominatim.openstreetmap.org/search` +
+    `?q=${encodeURIComponent(query + ', India')}` +
+    `&format=json&addressdetails=1&limit=8&countrycodes=in`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('Geocoding failed');
+  return res.json() as Promise<any[]>;
+}
+
+async function nominatimReverse(lat: number, lon: number) {
+  const url =
+    `https://nominatim.openstreetmap.org/reverse` +
+    `?lat=${lat}&lon=${lon}&format=json&addressdetails=1`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('Reverse geocoding failed');
+  return res.json();
+}
 
 export function FarmSetupModal({ isOpen, onClose }: { isOpen: boolean, onClose?: () => void }) {
   const [step, setStep] = useState<'intro' | 'geolocation' | 'manual' | 'saving'>('intro');
@@ -23,30 +43,42 @@ export function FarmSetupModal({ isOpen, onClose }: { isOpen: boolean, onClose?:
           try {
             setStep('saving');
             const { latitude, longitude } = position.coords;
-            // Reverse geocode via backend
-            const res = await api.get(`/location/reverse`, { params: { lat: latitude, lng: longitude } });
-            
-            // Create farm
+            // Reverse geocode via Nominatim (free, no backend needed)
+            const geo = await nominatimReverse(latitude, longitude);
+            const addr = geo.address || {};
+            const villageName =
+              addr.village || addr.town || addr.suburb || addr.city || geo.name || 'My Farm';
+
             const farmPayload = {
-              name: `My Farm - ${res.data.name || 'Current Location'}`,
+              name: `My Farm - ${villageName}`,
               lat: latitude,
               lng: longitude,
-              village: res.data.name,
-              district: res.data.district,
-              state: res.data.state
+              village: villageName,
+              district: addr.county || addr.district || '',
+              state: addr.state || ''
             };
-            
-            const createRes = await api.post('/farms/', farmPayload);
-            addFarm(createRes.data);
+
+            try {
+              const createRes = await api.post('/farms/', farmPayload);
+              addFarm(createRes.data);
+            } catch (saveError: any) {
+              // Backend unavailable — save locally
+              const isNetworkError = !saveError.response;
+              if (isNetworkError) {
+                addFarm({ id: `local-${Date.now()}`, ...farmPayload });
+              } else {
+                throw saveError; // re-throw real server errors
+              }
+            }
             if (onClose) onClose();
           } catch (error: any) {
-            console.error("Save farm error:", error);
+            console.error('Save farm error:', error);
             const msg = error.response?.data?.detail || error.message || 'Unknown error';
             setGeoError(`Failed to save farm location. Error: ${msg}`);
             setStep('intro');
           }
         },
-        (error) => {
+        () => {
           setGeoError('Location access denied or failed. Please search manually.');
           setStep('manual');
         }
@@ -61,11 +93,24 @@ export function FarmSetupModal({ isOpen, onClose }: { isOpen: boolean, onClose?:
     e.preventDefault();
     if (!searchQuery.trim()) return;
     setIsSearching(true);
+    setSearchResults([]);
     try {
-      const res = await api.get(`/location/search`, { params: { query: searchQuery } });
-      setSearchResults(res.data);
+      // Use Nominatim directly — no backend required
+      const data = await nominatimSearch(searchQuery.trim());
+      const results = data.map((r: any) => ({
+        name: r.address?.village || r.address?.town || r.address?.suburb || r.address?.city || r.name,
+        display_name: r.display_name,
+        lat: parseFloat(r.lat),
+        lng: parseFloat(r.lon),
+        state: r.address?.state || '',
+        country: r.address?.country || '',
+      }));
+      setSearchResults(results);
+      if (results.length === 0) setGeoError('No locations found. Try a nearby town or city name.');
+      else setGeoError('');
     } catch (error) {
       console.error(error);
+      setGeoError('Search failed. Please check your internet connection.');
     } finally {
       setIsSearching(false);
     }
@@ -73,23 +118,32 @@ export function FarmSetupModal({ isOpen, onClose }: { isOpen: boolean, onClose?:
 
   const selectManualLocation = async (loc: any) => {
     setStep('saving');
+    const farmPayload = {
+      name: `My Farm - ${loc.name}`,
+      lat: loc.lat,
+      lng: loc.lng,
+      village: loc.name,
+      state: loc.state,
+      district: loc.district || '',
+    };
     try {
-      const farmPayload = {
-        name: `My Farm - ${loc.name}`,
-        lat: loc.lat,
-        lng: loc.lng,
-        village: loc.name,
-        state: loc.state
-      };
+      // Try to persist to backend (requires login + server)
       const createRes = await api.post('/farms/', farmPayload);
       addFarm(createRes.data);
-      if (onClose) onClose();
     } catch (error: any) {
-      console.error("Manual save farm error:", error);
-      const msg = error.response?.data?.detail || error.message || 'Unknown error';
-      setGeoError(`Failed to save farm location. Error: ${msg}`);
-      setStep('manual');
+      // Backend unavailable — save locally so weather still works
+      const isNetworkError = !error.response;
+      if (isNetworkError) {
+        addFarm({ id: `local-${Date.now()}`, ...farmPayload });
+      } else {
+        console.error('Manual save farm error:', error);
+        const msg = error.response?.data?.detail || error.message || 'Unknown error';
+        setGeoError(`Failed to save farm location. Error: ${msg}`);
+        setStep('manual');
+        return;
+      }
     }
+    if (onClose) onClose();
   };
 
   if (!isOpen) return null;
@@ -167,19 +221,22 @@ export function FarmSetupModal({ isOpen, onClose }: { isOpen: boolean, onClose?:
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Village, City, or PIN Code..."
+                    placeholder="Village, City, or Taluka name..."
                     className="w-full pl-10 pr-4 h-12 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
                   />
                 </div>
                 <Button type="submit" className="h-12 px-6" disabled={isSearching}>
-                  {isSearching ? '...' : 'Search'}
+                  {isSearching ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Search'}
                 </Button>
               </form>
 
               {geoError && <p className="text-rose-500 text-sm font-medium">{geoError}</p>}
 
               <div className="space-y-2 max-h-[300px] overflow-y-auto">
-                {searchResults.map((loc, idx) => (
+                {searchResults.length === 0 && !isSearching && searchQuery.length > 0 && !geoError && (
+                  <p className="text-sm text-gray-400 text-center py-4">No results found.</p>
+                )}
+                {searchResults.map((loc: any, idx: number) => (
                   <button
                     key={idx}
                     onClick={() => selectManualLocation(loc)}
@@ -187,9 +244,9 @@ export function FarmSetupModal({ isOpen, onClose }: { isOpen: boolean, onClose?:
                   >
                     <div>
                       <h4 className="font-bold text-gray-900 group-hover:text-blue-700">{loc.name}</h4>
-                      <p className="text-sm text-gray-500">{loc.state} {loc.country}</p>
+                      <p className="text-sm text-gray-500 truncate max-w-[260px]">{loc.display_name || `${loc.state}, ${loc.country}`}</p>
                     </div>
-                    <Plus className="text-gray-300 group-hover:text-blue-500 w-5 h-5" />
+                    <Plus className="text-gray-300 group-hover:text-blue-500 w-5 h-5 shrink-0" />
                   </button>
                 ))}
               </div>

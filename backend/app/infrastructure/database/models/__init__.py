@@ -2,7 +2,7 @@ from .base import Base
 from .enums import *
 from .user import User, FCMToken
 from .farm import Farm, FarmCrop
-from .library import Crop, Disease, Pest, Medicine, MedicineDisease, MedicinePest, MedicineCrop
+from .agricultural import KnowledgeSource, Crop, CropDisease, CropPest, Medicine, TreatmentPlan
 from .analysis import ImageMetadata, AIPrediction, Analysis, AnalysisRecommendation
 
 __all__ = [
@@ -11,13 +11,12 @@ __all__ = [
     "FCMToken",
     "Farm",
     "FarmCrop",
+    "KnowledgeSource",
     "Crop",
-    "Disease",
-    "Pest",
+    "CropDisease",
+    "CropPest",
     "Medicine",
-    "MedicineDisease",
-    "MedicinePest",
-    "MedicineCrop",
+    "TreatmentPlan",
     "ImageMetadata",
     "AIPrediction",
     "Analysis",

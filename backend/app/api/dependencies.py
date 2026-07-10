@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from app.infrastructure.database.session import get_db
 from app.infrastructure.database.models.user import User
+from app.infrastructure.database.models.enums import UserRole
 
 # Basic Pydantic model representing the authenticated user state
 class AuthenticatedUser:
@@ -39,8 +40,20 @@ async def get_current_user(
     user = result.scalars().first()
     
     if not user:
-        # User not in DB yet (e.g. during /sync)
-        return AuthenticatedUser(uid=str(uuid.uuid4()), email=email, role="farmer", firebase_uid=firebase_uid, is_anonymous=is_anonymous)
+        # Create user immediately to avoid ForeignKey errors in subsequent requests
+        new_role = UserRole.ADMIN if (email and "admin" in email.lower()) else UserRole.FARMER
+        email_to_save = email or (f"guest_{firebase_uid}@guest.local" if is_anonymous else "")
+        name_to_save = email_to_save.split('@')[0] if email_to_save else ("Guest User" if is_anonymous else "Unknown User")
+        
+        user = User(
+            firebase_uid=firebase_uid,
+            email=email_to_save,
+            name=name_to_save,
+            role=new_role
+        )
+        db.add(user)
+        await db.commit()
+        await db.refresh(user)
         
     return AuthenticatedUser(uid=str(user.id), email=user.email, role=user.role.value, firebase_uid=firebase_uid, is_anonymous=is_anonymous)
 

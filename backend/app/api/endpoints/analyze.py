@@ -8,9 +8,10 @@ from app.infrastructure.database.models.analysis import Analysis, AIPrediction
 from sqlalchemy.future import select
 from sqlalchemy import func
 from fastapi import HTTPException
-from app.domain.entities.analysis import AnalysisResponse, AnalysisCreate
+from app.domain.entities.analysis import AnalysisResponse, AnalysisCreate, DecisionEngineResponse
 from app.services.upload import upload_service
 from app.services.analysis import analysis_service
+from app.services.decision_engine import decision_engine
 
 router = APIRouter()
 
@@ -32,7 +33,7 @@ async def upload_image(
     image_record = await upload_service.upload_image(db, file, uuid.UUID(current_user.uid))
     return {"image_id": image_record.id, "url": image_record.download_url}
 
-@router.post("/predict", response_model=AnalysisResponse)
+@router.post("/predict", response_model=DecisionEngineResponse)
 async def predict_crop(
     request: AnalysisCreate,
     current_user: AuthenticatedUser = Depends(get_current_user),
@@ -49,12 +50,18 @@ async def predict_crop(
         if count >= 2:
             raise HTTPException(status_code=403, detail="GUEST_LIMIT_REACHED")
             
-    return await analysis_service.process_analysis(
+    analysis_full = await analysis_service.process_analysis(
         db, 
         user_id=uuid.UUID(current_user.uid), 
         image_id=request.image_id, 
         farm_id=request.farm_id
     )
+    
+    # Extract the underlying prediction and enrich via Decision Engine
+    pred_result = await db.execute(select(AIPrediction).where(AIPrediction.analysis_id == analysis_full.id))
+    prediction = pred_result.scalars().first()
+    
+    return await decision_engine.process(db, analysis_full, prediction)
 
 @router.get("/history/list")
 async def get_history(
@@ -79,7 +86,7 @@ async def get_history(
         }
         for a in analyses
     ]
-@router.get("/{analysis_id}")
+@router.get("/{analysis_id}", response_model=DecisionEngineResponse)
 async def get_analysis(
     analysis_id: uuid.UUID,
     current_user: AuthenticatedUser = Depends(get_current_user),
@@ -95,16 +102,4 @@ async def get_analysis(
     pred_result = await db.execute(select(AIPrediction).where(AIPrediction.analysis_id == analysis_id))
     prediction = pred_result.scalars().first()
     
-    # Format according to AnalysisResponse
-    return {
-        "id": analysis.id,
-        "status": analysis.status,
-        "health_score": analysis.health_score,
-        "overall_severity": analysis.overall_severity,
-        "water_status": analysis.water_status,
-        "detected_diseases": prediction.detected_diseases if prediction else [],
-        "detected_pests": prediction.detected_pests if prediction else [],
-        "recommendations": [], # TODO: Map medicines here
-        "weather_snapshot": analysis.weather_snapshot,
-        "created_at": analysis.created_at
-    }
+    return await decision_engine.process(db, analysis, prediction)

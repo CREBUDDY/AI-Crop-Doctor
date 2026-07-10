@@ -10,7 +10,7 @@ export function MainLayout() {
     <div className="flex min-h-screen flex-col bg-background">
       {!isAuthPage && <Navbar />}
       
-      <main className="flex-1 pb-20 md:pb-0 relative overflow-x-hidden">
+      <main className="flex-1 pt-16 pb-20 md:pb-0 relative overflow-x-hidden">
         <div className="h-full animate-in fade-in duration-300">
           <Outlet />
         </div>

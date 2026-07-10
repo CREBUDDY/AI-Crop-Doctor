@@ -31,9 +31,7 @@ export function Sidebar({ mobileOpen, setMobileOpen }: { mobileOpen: boolean, se
     <div className="flex flex-col h-full bg-white/80 backdrop-blur-xl border-r border-slate-200 w-64 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
       <div className="h-16 flex items-center px-6 border-b border-slate-100">
         <Link to="/" className="flex items-center gap-2 group">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-mint-400 to-mint-600 flex items-center justify-center text-white shadow-lg shadow-mint-500/20 group-hover:shadow-mint-500/40 transition-all group-hover:scale-105">
-            <Sprout className="w-5 h-5" />
-          </div>
+          <img src="/logo.jpg" alt="AI Crop Doctor Logo" className="w-8 h-8 rounded-full object-cover shadow-lg group-hover:scale-105 transition-transform" />
           <span className="font-bold text-lg bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">
             AI Crop Doctor
           </span>

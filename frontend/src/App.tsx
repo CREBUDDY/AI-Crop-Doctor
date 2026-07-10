@@ -17,11 +17,12 @@ import { ForgotPasswordPage } from "./pages/auth/ForgotPasswordPage";
 import {
   AboutPage,
   ContactPage,
-  FAQPage,
   PrivacyPolicyPage,
   TermsPage,
   SupportPage
 } from "./pages/public/StaticPages";
+import { FAQPage } from './pages/public/FAQPage';
+import { BlogPage } from './pages/public/BlogPage';
 
 // Lazy-loaded App Pages (Code Splitting)
 const DashboardPage = lazy(() => import("./pages/dashboard/DashboardPage").then(m => ({ default: m.DashboardPage })));
@@ -106,6 +107,7 @@ function App() {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/faq" element={<FAQPage />} />
+        <Route path="/blog" element={<BlogPage />} />
         <Route path="/privacy" element={<PrivacyPolicyPage />} />
         <Route path="/support" element={<SupportPage />} />
         

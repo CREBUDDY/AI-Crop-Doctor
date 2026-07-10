@@ -45,6 +45,23 @@ class FarmCrop(Base):
     is_active = Column(Boolean, nullable=False, default=True)
     created_at = Column(DateTime(timezone=True), server_default=text('NOW()'), nullable=False)
 
+    @property
+    def current_stage(self) -> str:
+        """Estimate the crop stage based on days since sowing."""
+        if not self.sowing_date:
+            return "Unknown"
+        days = (datetime.utcnow().date() - self.sowing_date).days
+        if days < 0:
+            return "Not Sown Yet"
+        elif days <= 15:
+            return "Seedling"
+        elif days <= 45:
+            return "Vegetative"
+        elif days <= 75:
+            return "Reproductive (Flowering)"
+        else:
+            return "Maturity/Harvesting"
+
     # Relationships
     farm = relationship("Farm", back_populates="farm_crops")
     crop = relationship("Crop")

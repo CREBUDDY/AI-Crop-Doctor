@@ -91,6 +91,8 @@ export function LandingPage() {
               <a href="#features" className="px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap text-slate-500 hover:text-mint-700 hover:bg-mint-50 transition-all">{t('nav.features')}</a>
               <a href="#how-it-works" className="px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap text-slate-500 hover:text-mint-700 hover:bg-mint-50 transition-all">{t('nav.howItWorks')}</a>
               <a href="#stats" className="px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap text-slate-500 hover:text-mint-700 hover:bg-mint-50 transition-all">{t('nav.stats')}</a>
+              <a href="#blog" className="px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap text-slate-500 hover:text-mint-700 hover:bg-mint-50 transition-all">{t('nav.blog')}</a>
+              <a href="#faq" className="px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap text-slate-500 hover:text-mint-700 hover:bg-mint-50 transition-all">{t('nav.faq')}</a>
             </div>
             
             {/* Right side CTA & Translation */}
@@ -307,6 +309,111 @@ export function LandingPage() {
       </section>
 
       {/* Footer */}
+
+      {/* ── Blog Section ── */}
+      <section id="blog" className="py-24 bg-slate-50 relative overflow-hidden w-full">
+        {/* Subtle glow matching Features section */}
+        <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-gradient-to-bl from-emerald-100/40 to-transparent rounded-full blur-[100px] pointer-events-none" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-sm font-bold uppercase tracking-widest mb-4 border border-emerald-100">{t('landing.blog.tag')}</span>
+            <h2 className="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight mb-4">
+              {t('landing.blog.title1')} <span className="text-emerald-600">{t('landing.blog.title2')}</span>
+            </h2>
+            <p className="text-slate-500 text-lg max-w-2xl mx-auto">{t('landing.blog.subtitle')}</p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {(t('landing.blog.posts', { returnObjects: true }) as any[]).map((post, i) => (
+              <motion.article
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.12 }}
+                className="group bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+              >
+                <div className="relative h-52 overflow-hidden">
+                  <img
+                    src={i === 0 ? "/blog-disease.jpg" : i === 1 ? "/blog-farming.jpg" : "/blog-ai.jpg"}
+                    alt={post.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+                  <span className={`absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-bold border ${i === 0 ? "bg-red-50 text-red-600 border-red-100" : i === 1 ? "bg-amber-50 text-amber-600 border-amber-100" : "bg-blue-50 text-blue-600 border-blue-100"}`}>{post.tag}</span>
+                </div>
+                <div className="p-6">
+                  <div className="flex items-center gap-3 text-xs text-slate-400 font-medium mb-3">
+                    <span>{post.date}</span>
+                    <span className="w-1 h-1 rounded-full bg-slate-300" />
+                    <span>{post.readTime}</span>
+                  </div>
+                  <h3 className="font-bold text-slate-900 text-lg leading-snug mb-3 group-hover:text-emerald-700 transition-colors">{post.title}</h3>
+                  <p className="text-slate-500 text-sm leading-relaxed mb-5 line-clamp-2">{post.excerpt}</p>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold flex items-center justify-center flex-shrink-0">
+                        {post.author[0]}
+                      </div>
+                      <span className="text-xs font-semibold text-slate-600">{post.author}</span>
+                    </div>
+                    <span className="text-emerald-600 text-sm font-bold flex items-center gap-1 group-hover:gap-2 transition-all">
+                      {t('common.read')} <ChevronRight className="w-4 h-4" />
+                    </span>
+                  </div>
+                </div>
+              </motion.article>
+            ))}
+          </div>
+
+          <div className="text-center mt-12">
+            <Link to="/blog" className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-slate-200 text-slate-700 font-semibold hover:border-emerald-300 hover:text-emerald-700 hover:bg-emerald-50 transition-all">
+              {t('landing.blog.viewAll')} <ChevronRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── FAQ Section ── */}
+      <section id="faq" className="py-24 relative overflow-hidden w-full" style={{ background: 'linear-gradient(135deg, #064e3b 0%, #065f46 30%, #047857 60%, #0f766e 100%)' }}>
+        {/* Decorative blobs */}
+        <div className="absolute -top-32 -left-32 w-[500px] h-[500px] rounded-full opacity-20 pointer-events-none" style={{ background: 'radial-gradient(circle, #34d399, transparent 70%)' }} />
+        <div className="absolute -bottom-32 -right-32 w-[500px] h-[500px] rounded-full opacity-20 pointer-events-none" style={{ background: 'radial-gradient(circle, #2dd4bf, transparent 70%)' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full opacity-10 pointer-events-none" style={{ background: 'radial-gradient(circle, #a7f3d0, transparent 70%)' }} />
+        {/* Subtle grid pattern */}
+        <div className="absolute inset-0 opacity-5 pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <span className="inline-block px-4 py-1.5 rounded-full bg-white/10 text-emerald-200 text-sm font-bold uppercase tracking-widest mb-4 border border-white/20">{t('landing.faq.tag')}</span>
+            <h2 className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight mb-4">
+              {t('landing.faq.title1')} <span className="text-emerald-300">{t('landing.faq.title2')}</span>
+            </h2>
+            <p className="text-emerald-100/80 text-lg max-w-xl mx-auto">{t('landing.faq.subtitle')}</p>
+          </motion.div>
+
+          <FAQAccordion />
+
+          <div className="text-center mt-12">
+            <p className="text-emerald-200/70 text-sm mb-4">{t('landing.faq.stillHaveQuestions')}</p>
+            <Link to="/contact" className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-emerald-800 hover:bg-emerald-50 font-semibold shadow-lg shadow-black/20 transition-all hover:-translate-y-0.5">
+              {t('landing.faq.contactTeam')} <ChevronRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
       <footer className="border-t border-slate-200 bg-white py-12 w-full text-center">
         <Link to="/" className="flex items-center justify-center gap-2 mb-6 group">
           <img src="/logo.jpg" alt="AI Crop Doctor Logo" className="h-8 w-8 rounded-full object-cover shadow-sm group-hover:scale-105 transition-transform" />
@@ -314,6 +421,7 @@ export function LandingPage() {
         </Link>
         <p className="text-slate-500 font-medium">{t('landing.footer.copy')}</p>
       </footer>
+
 
       {/* Video Demo Modal */}
       <AnimatePresence>
@@ -360,6 +468,7 @@ export function LandingPage() {
   );
 }
 
+
 function CheckCircleIcon() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -368,3 +477,63 @@ function CheckCircleIcon() {
     </svg>
   );
 }
+
+const FAQ_ITEMS = []; // We will get items from translation now
+
+
+function FAQAccordion() {
+  const [open, setOpen] = useState<number | null>(null);
+  const { t } = useTranslation();
+  const faqItems = (t('landing.faq.items', { returnObjects: true }) as any[]);
+  return (
+    <div className="space-y-3">
+      {faqItems.map((item, i) => (
+        <motion.div
+          key={i}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.4, delay: i * 0.06 }}
+          className={`rounded-2xl border transition-all duration-200 overflow-hidden backdrop-blur-sm ${
+            open === i
+              ? "border-white/30 bg-white/20 shadow-lg shadow-black/10"
+              : "border-white/15 bg-white/10 hover:bg-white/15 hover:border-white/25"
+          }`}
+        >
+          <button
+            onClick={() => setOpen(open === i ? null : i)}
+            className="w-full flex items-center justify-between px-6 py-5 text-left gap-4"
+          >
+            <span className="font-semibold text-base text-white">
+              {item.q}
+            </span>
+            <span className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 flex-shrink-0 ${
+              open === i
+                ? "bg-white text-emerald-700 rotate-45"
+                : "bg-white/20 text-white"
+            }`}>
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M7 2v10M2 7h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+            </span>
+          </button>
+          <AnimatePresence initial={false}>
+            {open === i && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.25, ease: "easeInOut" }}
+              >
+                <p className="px-6 pb-5 text-emerald-100/90 leading-relaxed">{item.a}</p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      ))}
+    </div>
+  );
+}
+
+
+

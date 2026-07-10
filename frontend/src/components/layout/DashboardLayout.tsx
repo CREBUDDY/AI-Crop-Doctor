@@ -57,12 +57,12 @@ export function DashboardLayout() {
   const showSetupModal = !isLoadingFarms && !!user && farmsList.length === 0;
 
   return (
-    <div className="flex h-screen bg-slate-50 overflow-hidden font-sans">
+    <div className="fixed inset-0 flex bg-slate-50 font-sans">
       <Sidebar mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
       
-      <div className="flex-1 flex flex-col lg:pl-64 min-w-0 transition-all duration-300">
-        {/* Top Header */}
-        <header className="h-16 flex-shrink-0 bg-white/80 backdrop-blur-xl border-b border-slate-200 flex items-center justify-between px-4 sm:px-6 z-10">
+      <div className="flex-1 flex flex-col lg:pl-64 min-w-0 overflow-hidden">
+        {/* Top Header — fixed as a flex child; overflow-hidden on parent prevents it from scrolling */}
+        <header className="h-16 flex-shrink-0 z-30 bg-white/90 backdrop-blur-xl border-b border-slate-200 flex items-center justify-between px-4 sm:px-6">
           <div className="flex items-center gap-4">
             <button
               onClick={() => setMobileOpen(true)}

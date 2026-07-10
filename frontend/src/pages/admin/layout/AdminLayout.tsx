@@ -49,7 +49,7 @@ export default function AdminLayout() {
       >
         <div className="flex items-center justify-between h-16 px-6 bg-slate-950">
           <div className="flex items-center space-x-2">
-            <Sprout className="w-6 h-6 text-emerald-500" />
+            <img src="/logo.jpg" alt="AI Crop Doctor Logo" className="w-8 h-8 rounded-full object-cover shadow-sm group-hover:scale-105 transition-transform" />
             <span className="text-xl font-bold tracking-tight">Admin Portal</span>
           </div>
           <button className="lg:hidden" onClick={() => setSidebarOpen(false)}>

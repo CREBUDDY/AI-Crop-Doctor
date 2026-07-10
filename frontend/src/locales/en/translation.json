@@ -5,7 +5,9 @@
     "stats": "Stats",
     "signIn": "Sign In",
     "tryOnline": "Try online free",
-    "goToDashboard": "Go to Dashboard"
+    "goToDashboard": "Go to Dashboard",
+    "blog": "Blog",
+    "faq": "FAQ"
   },
   "hero": {
     "badge": "Advanced AI Crop Analysis",
@@ -67,6 +69,58 @@
     "disease": "Disease",
     "status": "Status"
   },
+
+  "report": {
+    "loading": "Loading report...",
+    "error": {
+      "title": "Failed to load report",
+      "desc": "The report ID may be invalid or you do not have permission to view it.",
+      "back": "Return to Dashboard"
+    },
+    "title": "Analysis Report",
+    "subtitle": "Crop Analysis",
+    "verified": "AI Verified",
+    "score": "Score",
+    "status": {
+      "healthy": "Healthy Crop",
+      "severity": "Severity",
+      "healthyTitle": "Crop Appears Healthy",
+      "healthyDesc": "No significant diseases or pests were detected with high confidence.",
+      "detected": "Detected",
+      "diseaseDesc": "We detected signs of infection. Immediate action is required to prevent further crop loss and spreading to healthy plants."
+    },
+    "confidence": {
+      "title": "AI Confidence Analysis",
+      "disease": "Detected disease.",
+      "pest": "Detected pest.",
+      "none": "No issues detected by the AI."
+    },
+    "recovery": {
+      "title": "Recovery Estimate",
+      "label": "Expected Recovery In",
+      "days": "7 - 10 Days",
+      "desc": "If the recommended treatment is applied today, new healthy foliage should appear within a week."
+    },
+    "plan": {
+      "title": "Verified Treatment Plan",
+      "subtitle": "ICAR Approved Protocol",
+      "medicine": {
+        "type": "Chemical Fungicide",
+        "dosage": "Dosage / Acre",
+        "water": "Water / Acre",
+        "important": "Important:",
+        "warning": "Wait at least 5 days after spraying before harvesting. Wear protective gear."
+      },
+      "why": {
+        "title": "Why we recommend this",
+        "desc": "Mancozeb is a broad-spectrum contact fungicide that provides excellent preventative action. It is highly recommended by ICAR for this specific stage of crop growth."
+      },
+      "actions": {
+        "add": "Add to Today's Tasks",
+        "order": "Order Medicine"
+      }
+    }
+  },
   "landing": {
     "howItWorks": {
       "badge": "Simple Process",
@@ -120,57 +174,159 @@
     },
     "footer": {
       "copy": "© 2026 AI Crop Doctor. Crafted with Care."
+    },
+    "blog": {
+      "tag": "From Our Blog",
+      "title1": "Learn, Grow,",
+      "title2": "Thrive",
+      "subtitle": "Expert tips, crop guides and the latest in AI-powered agriculture from our agronomy team.",
+      "viewAll": "View all articles",
+      "page": {
+        "tag": "Our Blog",
+        "title1": "Insights for",
+        "title2": "Smarter Farming",
+        "subtitle": "Expert tips, crop guides and the latest in AI-powered agriculture — written by agronomists and farmers for farmers.",
+        "ctaTitle": "Ready to protect your crops?",
+        "ctaSubtitle": "Start your free AI diagnosis — no account required.",
+        "ctaButton": "Try for free"
+      },
+      "posts": [
+        {
+          "tag": "Disease Guide",
+          "title": "Early Blight in Tomatoes: Identify & Treat Before It's Too Late",
+          "excerpt": "Learn how to spot the tell-tale concentric brown rings of early blight and the exact fungicide schedule that stops it in its tracks.",
+          "readTime": "5 min read",
+          "author": "Dr. Anjali Sharma",
+          "date": "Jun 28, 2025"
+        },
+        {
+          "tag": "Smart Farming",
+          "title": "How AI Is Transforming Indian Agriculture in 2025",
+          "excerpt": "From soil sensors to satellite imagery, discover the top 7 AI tools Indian farmers are using to double their yield this season.",
+          "readTime": "8 min read",
+          "author": "Rajesh Patel",
+          "date": "Jun 14, 2025"
+        },
+        {
+          "tag": "How-To",
+          "title": "Your First AI Crop Scan: A Step-by-Step Photo Guide",
+          "excerpt": "Getting the best results from your AI analysis comes down to how you take the photo. Here's exactly what to do for a perfect scan every time.",
+          "readTime": "4 min read",
+          "author": "Priya Nair",
+          "date": "May 30, 2025"
+        },
+        {
+          "tag": "Soil Health",
+          "title": "Understanding Soil pH: The Hidden Key to Maximum Yield",
+          "excerpt": "Most farmers overlook soil pH, yet it controls nutrient availability more than any other factor. Here's a simple guide to testing and correcting it.",
+          "readTime": "6 min read",
+          "author": "Dr. Kiran Rao",
+          "date": "May 18, 2025"
+        },
+        {
+          "tag": "Pest Control",
+          "title": "Integrated Pest Management: Organic Methods That Actually Work",
+          "excerpt": "Chemical pesticides are increasingly ineffective. Discover the IPM strategies top farmers use to control pests without harming the ecosystem.",
+          "readTime": "7 min read",
+          "author": "Meena Krishnan",
+          "date": "May 5, 2025"
+        },
+        {
+          "tag": "Water Management",
+          "title": "Drip Irrigation vs. Sprinkler: Which Saves More Water?",
+          "excerpt": "Water scarcity is agriculture's biggest challenge. We compare drip and sprinkler systems across 5 key metrics to help you choose what's right for your farm.",
+          "readTime": "5 min read",
+          "author": "Suresh Patil",
+          "date": "Apr 22, 2025"
+        }
+      ]
+    },
+    "faq": {
+      "tag": "FAQ",
+      "title1": "Got",
+      "title2": "Questions?",
+      "subtitle": "Everything you need to know about AI Crop Doctor.",
+      "stillHaveQuestions": "Still have questions?",
+      "contactTeam": "Contact our team",
+      "page": {
+        "title1": "Help &",
+        "title2": "Support",
+        "subtitle": "Find answers to common questions about using AI Crop Doctor.",
+        "ctaTitle": "Still need help?",
+        "ctaSubtitle": "Our agronomy team is ready to assist you with any questions.",
+        "ctaButton": "Contact Support",
+        "categories": [
+          {
+            "category": "Getting Started",
+            "items": [
+              { "q": "Is AI Crop Doctor free to use?", "a": "Yes! You can start completely free as a guest with 2 trial scans — no sign-up required. Creating a free account gives you unlimited scans. We plan to offer a premium tier with advanced features in the future." },
+              { "q": "Do I need to create an account?", "a": "No! You can use guest mode for 2 free trial scans without any account. For unlimited scans and to save your scan history, create a free account in under 30 seconds." },
+              { "q": "What kind of photo should I take?", "a": "Take a close-up photo of the affected leaf in natural daylight. Make sure the leaf fills the frame, the image is in focus, and avoid shadows. Avoid screenshots from the internet — the AI validates that it is a real crop photo." }
+            ]
+          },
+          {
+            "category": "AI & Accuracy",
+            "items": [
+              { "q": "Which crops and diseases can it detect?", "a": "Our AI is trained on 50+ crops including tomato, wheat, rice, cotton, maize, potato, and more. It can detect 100+ diseases, pest infestations, nutrient deficiencies, and water stress conditions." },
+              { "q": "How accurate is the AI diagnosis?", "a": "Our model achieves 94%+ accuracy on common crop diseases. Accuracy improves with clear, well-lit photos of affected leaves. For critical decisions, we always recommend confirming with a local agricultural expert." },
+              { "q": "Does it work offline?", "a": "The AI analysis requires an internet connection as processing happens in the cloud. However, you can view your past scan history offline." }
+            ]
+          },
+          {
+            "category": "Privacy & Security",
+            "items": [
+              { "q": "Is my farm data private and secure?", "a": "Absolutely. All data is encrypted in transit and at rest. We never sell your farm data to third parties. You can delete your account and all associated data at any time from Profile Settings." },
+              { "q": "Can I delete my account and data?", "a": "Yes. Go to Profile Settings → Danger Zone → Delete Account. This permanently removes your account, all scan history, AI reports and data. This action cannot be undone." }
+            ]
+          },
+          {
+            "category": "Features",
+            "items": [
+              { "q": "Can I use it in my local language?", "a": "Yes! AI Crop Doctor supports 10 Indian languages including Hindi, Marathi, Bengali, Tamil, Telugu, Gujarati, Kannada, Punjabi, and Malayalam. Switch the language anytime from the navbar or Profile Settings." },
+              { "q": "How do I get treatment recommendations?", "a": "After every scan, we provide a detailed report with identified diseases, severity level, and step-by-step treatment recommendations including organic and chemical options tailored to your crop." },
+              { "q": "Is there a mobile app?", "a": "The web app is fully mobile-responsive and works great in your mobile browser. A dedicated iOS and Android app is coming soon." }
+            ]
+          }
+        ]
+      },
+      "items": [
+        {
+          "q": "Is AI Crop Doctor free to use?",
+          "a": "Yes! You can start completely free as a guest with 2 trial scans — no sign-up required. Creating a free account gives you unlimited scans. We plan to offer a premium tier with advanced features in the future."
+        },
+        {
+          "q": "Which crops and diseases can it detect?",
+          "a": "Our AI is trained on 50+ crops including tomato, wheat, rice, cotton, maize, potato, and more. It can detect 100+ diseases, pest infestations, nutrient deficiencies, and water stress conditions."
+        },
+        {
+          "q": "How accurate is the AI diagnosis?",
+          "a": "Our model achieves 94%+ accuracy on common crop diseases. Accuracy improves with clear, well-lit photos of affected leaves. For critical decisions, we always recommend confirming with a local agricultural expert."
+        },
+        {
+          "q": "What kind of photo should I take?",
+          "a": "Take a close-up photo of the affected leaf in natural daylight. Make sure the leaf fills the frame, the image is in focus, and avoid shadows. Avoid screenshots from the internet — the AI validates that it's a real crop photo."
+        },
+        {
+          "q": "Does it work offline?",
+          "a": "The AI analysis requires an internet connection as processing happens in the cloud. However, you can view your past scan history offline."
+        },
+        {
+          "q": "Is my farm data private and secure?",
+          "a": "Absolutely. All data is encrypted in transit and at rest. We never sell your farm data to third parties. You can delete your account and all associated data at any time from Profile Settings."
+        },
+        {
+          "q": "Can I use it in my local language?",
+          "a": "Yes! AI Crop Doctor supports 10 Indian languages including Hindi, Marathi, Bengali, Tamil, Telugu, Gujarati, Kannada, Punjabi, and Malayalam. Switch the language anytime from the navbar or Profile Settings."
+        },
+        {
+          "q": "How do I get treatment recommendations?",
+          "a": "After every scan, we provide a detailed report with identified diseases, severity level, and step-by-step treatment recommendations including organic and chemical options tailored to your crop."
+        }
+      ]
     }
   },
-  "report": {
-    "loading": "Loading report...",
-    "error": {
-      "title": "Failed to load report",
-      "desc": "The report ID may be invalid or you do not have permission to view it.",
-      "back": "Return to Dashboard"
-    },
-    "title": "Analysis Report",
-    "subtitle": "Crop Analysis",
-    "verified": "AI Verified",
-    "score": "Score",
-    "status": {
-      "healthy": "Healthy Crop",
-      "severity": "Severity",
-      "healthyTitle": "Crop Appears Healthy",
-      "healthyDesc": "No significant diseases or pests were detected with high confidence.",
-      "detected": "Detected",
-      "diseaseDesc": "We detected signs of infection. Immediate action is required to prevent further crop loss and spreading to healthy plants."
-    },
-    "confidence": {
-      "title": "AI Confidence Analysis",
-      "disease": "Detected disease.",
-      "pest": "Detected pest.",
-      "none": "No issues detected by the AI."
-    },
-    "recovery": {
-      "title": "Recovery Estimate",
-      "label": "Expected Recovery In",
-      "days": "7 - 10 Days",
-      "desc": "If the recommended treatment is applied today, new healthy foliage should appear within a week."
-    },
-    "plan": {
-      "title": "Verified Treatment Plan",
-      "subtitle": "ICAR Approved Protocol",
-      "medicine": {
-        "type": "Chemical Fungicide",
-        "dosage": "Dosage / Acre",
-        "water": "Water / Acre",
-        "important": "Important:",
-        "warning": "Wait at least 5 days after spraying before harvesting. Wear protective gear."
-      },
-      "why": {
-        "title": "Why we recommend this",
-        "desc": "Mancozeb is a broad-spectrum contact fungicide that provides excellent preventative action. It is highly recommended by ICAR for this specific stage of crop growth."
-      },
-      "actions": {
-        "add": "Add to Today's Tasks",
-        "order": "Order Medicine"
-      }
-    }
+  "common": {
+    "backToHome": "Back to Home",
+    "read": "Read"
   }
 }
